@@ -1,22 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.min.js"></script> -->
-    <!-- <script lang="javascript" src="dist/xlsx.full.min.js"></script> -->
-    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-    <title>Document</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-        #drop_zone {
-            border: 5px solid blue;
-            width: 200px;
-            height: 100px;
-        }
-    </style>
-    <script>
+<html>
+  <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+      <script type="module" src="./assets/js/grid-line.js"></script>
+      <!-- <script src="assets/js/script.js"></script> -->
+      <title>
+        Hours Calc | Convert hours table in Xls file to decimal units.
+      </title>
+      <meta
+        name="description"
+        content="
+     Convert your hours table to decimal measure.
+    "
+      />
+
+      <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+      <link
+        rel="shortcut icon"
+        href="assets/img/favicon.ico"
+        type="image/x-icon"
+      />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap"
+        rel="stylesheet"
+      />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap"
+        rel="stylesheet"
+      />
+
+      <link rel="stylesheet" href="assets/css/main.css" />
+      <link rel="stylesheet" href="assets/css/mobile.css" />
+
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+      />
+
+      <!-- SEO Plugin -->
+      <!-- Begin Jekyll SEO tag v2.7.1 -->
+      <title>
+        Hours Calculator | Convert hours table in Xls file to decimal units
+      </title>
+      
+      <!-- <meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Jekyll Podcaster" />
+<meta name="author" content="Alessio Franceschi" />
+<meta property="og:locale" content="it" />
+<meta name="description" content="A Jekyll Theme designed for Podcasters" />
+<meta property="og:description" content="A Jekyll Theme designed for Podcasters" />
+<link rel="canonical" href="https://jekyll-podcaster.netlify.app//" />
+<meta property="og:url" content="https://jekyll-podcaster.netlify.app//" />
+<meta property="og:site_name" content="Jekyll Podcaster" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Jekyll Podcaster" />
+<meta name="twitter:site" content="@PandaSekh" />
+<meta name="twitter:creator" content="@Alessio Franceschi" /> -->
+
+      <!-- Google Analytics -->
+
+      <!-- End Google Analytics -->
+      <script>
         let _data = null;
         let _fileNameOutput = "output";
 
@@ -98,6 +145,7 @@
                 // console.log(workbook.Sheets.Sheet2)
                 let jsonObj = XLSX.utils.sheet_to_json(workbook.Sheets['Sheet2'], {raw: false});
                 _data = {};
+                showHeader();
                 processDatesJson(jsonObj, _data);
                 console.log(_data.results);
                 _data.total = summarize(_data);
@@ -110,6 +158,7 @@
                 console.log('Min: ', _data.min);
                 console.log('# working days: ', _data.workDays);
                 console.log('Total hours: ', _data.total);
+                showSummary(_data.max, _data.min, _data.workDays, _data.total, _data.errors);
                 // workbook.SheetNames.forEach(function(sheetName) {
                     // var roa = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                     // if (roa.length > 0) {
@@ -131,24 +180,27 @@
             let daysOfWork = 0;
             let sickDays = 0;
             let daysOff = 0;
+            let lineNumber = 0;
             datesJsonArray.forEach(date => {
                 // console.log(date);
                 x = Object.keys(date).map(key => date[key])
                 // console.log(x)
+                let prod = undefined;
                 if(x[7] === "עבודה") {
-                    const prod = procossDateLine(x[0],x[4],x[5], x[3]);
+                    prod = procossDateLine(x[0],x[4],x[5], x[3]);
                     results.push(prod)
                     daysOfWork++;
                 } else if(x[4] === "עבודה") {
-                    const prod = procossDateLine(x[0],x[1],x[2], x[4]);
+                    prod = procossDateLine(x[0],x[1],x[2], x[4]);
                     results.push(prod);
                     daysOfWork++;
                 } else if(x[5] === "עבודה") {
-                    const prod = procossDateLine(x[0],x[2],x[3], x[4]);
+                    prod = procossDateLine(x[0],x[2],x[3], x[4]);
                     results.push(prod);
                     daysOfWork++;
                 }
-
+                showResults(prod, lineNumber);
+                lineNumber++;
             });
             outputData.results = results;
             outputData.workDays = daysOfWork;
@@ -166,12 +218,77 @@
             // console.log(date, endTime - startTime, total);
         }
 
+        function showHeader() {
+          const resultsLst = $("#resultsList");
+            resultsLst.append(`<div class="data-row">
+              <input type="checkbox" id="line-all" name="line-all" value="line-all" checked onclick="checkAllClicked()">
+              <span class="cell date-cell">"תאריך"</span> 
+              <span class="cell start-cell">"התחלה"</span> 
+              <span class="cell end-cell">"סיום"</span>
+              <span class="cell total-cell">"סה"כ שעות"</span>
+            </div>`);
+        } 
+       function showResults(lineData, lineNumber) {
+          if(lineData) {
+            const resultsLst = $("#resultsList");
+            resultsLst.append(`<div class="data-row">
+              <input type="checkbox" id="line-${lineNumber}" name="line-${lineNumber}" value="line-${lineNumber}" checked onclick="checkClicked(this)">
+              <span class="cell date-cell">${lineData.date.substring(0,20)}</span> 
+              <span class="cell start-cell">${lineData.start.toFixed(2)}</span> 
+              <span class="cell end-cell">${lineData.end.toFixed(2)}</span>
+              <span class="cell total-cell">${lineData.diff.toFixed(2)}</span>
+            </div>`);
+          }
+        }
+
+        function showSummary(max, min, workReports, total, errors) {
+          if(total) {
+            const resultsLst = $("#resultsList");
+            
+            resultsLst.append(`<div class="data-row">
+              <span class="cell-summary">סה"כ שעות</span> 
+              <span class="cell">${total.toFixed(2)}</span>
+            </div>`);
+
+            resultsLst.append(`<div class="data-row">
+              <span class="cell-summary">סה"כ שורות כלולות</span> 
+              <span class="cell">${workReports.toFixed(2)}</span>
+            </div>`);
+
+            resultsLst.append(`<div class="data-row">
+              <span class="cell-summary">דיווח מינימלי</span> 
+              <span class="cell">${min.toFixed(2)}</span>
+            </div>`);
+
+            resultsLst.append(`<div class="data-row">
+              <span class="cell-summary">דיווח מקסימלי</span> 
+              <span class="cell">${max.toFixed(2)}</span>
+            </div>`);
+
+            resultsLst.append(`<div class="data-row">
+              <span class="cell-summary">שגיאות</span> 
+              <span class="cell">${errors}</span>
+            </div>`);
+          }
+        }
+
+        function checkAllClicked() {
+          console.log()
+
+        }
+
+        function checkClicked(element) {
+          console.log(element)
+
+        }
+
         function summarize(data) {
             const resultsArray = data.results;
             let total = 0;
             const errors = [];
             let min = 99;
             let max = 0;
+            // $("#results")
             resultsArray.forEach(element => {
                 if(element.diff<0) {
                     errors.push({'date': element.date, 'err': 'negative hours'})
@@ -225,16 +342,122 @@
 
 
     </script>
-</head>
-<body>
-    <div
-        id="drop_zone"
-        ondrop="dropHandler(event);"
-        ondragover="dragOverHandler(event);">
-        <p id="filesListElement">Drag one or more files to this <i>drop zone</i>.</p>
+  </head>
+  <body>
+    <div id="header">
+      <h1><a href="">Convert hours table in Xls file to decimal units</a></h1>
+      <div class="wave"></div>
+
+      <nav role="navigation">
+        <div id="desktop-nav">
+          <ul id="desktop-menu">
+            <li><a href=""> About</a></li>
+
+            <li><a href=""> Contact Us</a></li>
+          </ul>
+        </div>
+        <div id="hammenuToggle">
+          <input type="checkbox" />
+
+          <span></span>
+          <span></span>
+          <span></span>
+
+          <ul id="menu">
+            <li><a href=""> 111</a></li>
+
+            <li><a href=""> 222</a></li>
+          </ul>
+        </div>
+      </nav>
     </div>
-    <input type="file" id="file_upload" />
-    <button onclick="upload()">Upload</button>
-    <button onclick="saveAsExcel()">Save</button>
-</body>
+    <div class="container">
+      <div class="content">
+        <div class="post">
+          <div class="cover-img">
+            <img src="assets/img/pay-calc.jpg" alt="Podcast Cover" />
+          </div>
+          <div class="main-post-area">
+            <div class="title">
+              <h2 id="post-title">Load XLS File With The Monthly Hours Table</h2>
+  
+              <div class="info">
+                <span>
+                  <i class="far fa-calendar" aria-hidden="true"></i>December<span
+                    >12 - 22</span
+                  ><i class="far fa-clock"></i> 52:14
+                </span>
+              </div>
+            </div> 
+            
+            <div class="long-excerpt">
+              <div
+                id="drop_zone"
+                ondrop="dropHandler(event);"
+                ondragover="dragOverHandler(event);">
+                <p id="filesListElement">Drag XLS file to this <i>drop zone</i>.</p>
+              </div>
+              <!-- <p>Drag your Xls file in here</p> -->
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- Pagination links -->
+      </div>
+
+      <div class="content">
+        <div class="post resultsList">
+          <ul id="resultsList">
+
+          </ul>
+          
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p>
+        Copyright <a href="https://www.pay-calc.com">Hours Calc</a>.
+        All Right Reserved.
+        <!-- DO NOT DELETE -->Theme designed by
+        <a href="https://alessiofranceschi.me/">Alessio Franceschi</a>.
+      </p>
+    </footer>
+    <ul class="circles">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <script>
+      const controls = [
+        "play",
+        "rewind",
+        "progress",
+        "fast-forward",
+        "current-time",
+        "mute",
+        "volume",
+        "settings",
+        "airplay",
+      ];
+
+      const players = Array.from(document.querySelectorAll(".player"));
+      players.map(
+        (player) =>
+          new Plyr(player, {
+            controls,
+            invertTime: true,
+            toggleInvert: true,
+            settings: ["quality", "speed"],
+          })
+      );
+    </script>
+  </body>
 </html>
