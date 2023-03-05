@@ -46,23 +46,6 @@
         Hours Calculator | Convert hours table in Xls file to decimal units
       </title>
       
-      <!-- <meta name="generator" content="Jekyll v4.2.0" />
-<meta property="og:title" content="Jekyll Podcaster" />
-<meta name="author" content="Alessio Franceschi" />
-<meta property="og:locale" content="it" />
-<meta name="description" content="A Jekyll Theme designed for Podcasters" />
-<meta property="og:description" content="A Jekyll Theme designed for Podcasters" />
-<link rel="canonical" href="https://jekyll-podcaster.netlify.app//" />
-<meta property="og:url" content="https://jekyll-podcaster.netlify.app//" />
-<meta property="og:site_name" content="Jekyll Podcaster" />
-<meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Jekyll Podcaster" />
-<meta name="twitter:site" content="@PandaSekh" />
-<meta name="twitter:creator" content="@Alessio Franceschi" /> -->
-
-      <!-- Google Analytics -->
-
-      <!-- End Google Analytics -->
       <script>
         let _data = null;
         let _fileNameOutput = "output";
@@ -73,7 +56,6 @@
             ev.preventDefault();
         }
         function dropHandler(ev) {
-            console.log('File(s) dropped');
             // Prevent default behavior (Prevent file from being opened)
             ev.preventDefault();
             if (ev.dataTransfer.items) {
@@ -142,7 +124,9 @@
                     
                 });
                 let result = {};
-                // console.log(workbook.Sheets.Sheet2)
+                if (workbook.Sheets && workbook.Sheets.Sheet1 && workbook.Sheets.Sheet1.A1) {
+                  $("#month").text(workbook.Sheets.Sheet1.A1.v);
+                }
                 let jsonObj = XLSX.utils.sheet_to_json(workbook.Sheets['Sheet2'], {raw: false});
                 _data = {};
                 showHeader();
@@ -383,9 +367,8 @@
   
               <div class="info">
                 <span>
-                  <i class="far fa-calendar" aria-hidden="true"></i>December<span
-                    >12 - 22</span
-                  ><i class="far fa-clock"></i> 52:14
+                  <i class="far fa-calendar" aria-hidden="true"></i>
+                    <span id="month"></span><span id="year"></span>
                 </span>
               </div>
             </div> 
@@ -406,6 +389,14 @@
         <!-- Pagination links -->
       </div>
 
+      <div class="content save-button">
+        <button onclick="saveAsExcel()">Save Decimal Xls File</button>
+      
+        <button onclick="window.open('https://web.whatsapp.com://send?text=This is whatsapp sharing example using button')"> Open WhatsApp </button>
+      </div>
+
+      
+      
       <div class="content">
         <div class="post resultsList">
           <ul id="resultsList">
