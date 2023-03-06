@@ -5,7 +5,6 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
       <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-      <script type="module" src="./assets/js/grid-line.js"></script>
       <!-- <script src="assets/js/script.js"></script> -->
       <title>
         Hours Calc | Convert hours table in Xls file to decimal units.
@@ -40,10 +39,8 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
       />
 
-      <!-- SEO Plugin -->
-      <!-- Begin Jekyll SEO tag v2.7.1 -->
       <title>
-        Hours Calculator | Convert hours table in Xls file to decimal units
+        Hours Calculator | Convert monthly hours table xls to decimal units
       </title>
       
       <script>
@@ -101,15 +98,6 @@
             if(myElement) {
                 myElement.innerHTML = file.name;
             }
-            // let reader = new FileReader();
-            // reader.readAsText(file);
-            // reader.onload = function() {
-            //     console.log(reader.result);
-            // };
-
-            // reader.onerror = function() {
-            //     console.log(reader.error);
-            // };
         }
 
         function processEexcelFile(file){
@@ -331,29 +319,6 @@
     <div id="header">
       <h1><a href="">Convert hours table in Xls file to decimal units</a></h1>
       <div class="wave"></div>
-
-      <nav role="navigation">
-        <div id="desktop-nav">
-          <ul id="desktop-menu">
-            <li><a href=""> About</a></li>
-
-            <li><a href=""> Contact Us</a></li>
-          </ul>
-        </div>
-        <div id="hammenuToggle">
-          <input type="checkbox" />
-
-          <span></span>
-          <span></span>
-          <span></span>
-
-          <ul id="menu">
-            <li><a href=""> 111</a></li>
-
-            <li><a href=""> 222</a></li>
-          </ul>
-        </div>
-      </nav>
     </div>
     <div class="container">
       <div class="content">
@@ -390,9 +355,8 @@
       </div>
 
       <div class="content save-button">
-        <button onclick="saveAsExcel()">Save Decimal Xls File</button>
-      
-        <button onclick="window.open('https://web.whatsapp.com://send?text=This is whatsapp sharing example using button')"> Open WhatsApp </button>
+        <button onclick="saveAsExcel()">Download Decimal Xls File</button>
+        <button onclick="window.open('https://web.whatsapp.com://send?text=This is whatsapp sharing example using button')"> Send by WhatsApp </button>
       </div>
 
       
@@ -410,11 +374,9 @@
       <p>
         Copyright <a href="https://www.pay-calc.com">Hours Calc</a>.
         All Right Reserved.
-        <!-- DO NOT DELETE -->Theme designed by
-        <a href="https://alessiofranceschi.me/">Alessio Franceschi</a>.
       </p>
     </footer>
-    <ul class="circles">
+    <ul class="bubles">
       <li></li>
       <li></li>
       <li></li>
@@ -428,15 +390,7 @@
     </ul>
     <script>
       const controls = [
-        "play",
-        "rewind",
-        "progress",
-        "fast-forward",
-        "current-time",
-        "mute",
-        "volume",
-        "settings",
-        "airplay",
+        "play"
       ];
 
       const players = Array.from(document.querySelectorAll(".player"));
