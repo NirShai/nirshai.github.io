@@ -5,7 +5,6 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
       <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-      <script type="module" src="./assets/js/grid-line.js"></script>
       <!-- <script src="assets/js/script.js"></script> -->
       <title>
         Hours Calc | Convert hours table in Xls file to decimal units.
@@ -40,29 +39,10 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
       />
 
-      <!-- SEO Plugin -->
-      <!-- Begin Jekyll SEO tag v2.7.1 -->
       <title>
-        Hours Calculator | Convert hours table in Xls file to decimal units
+        Hours Calculator | Convert monthly hours table xls to decimal units
       </title>
       
-      <!-- <meta name="generator" content="Jekyll v4.2.0" />
-<meta property="og:title" content="Jekyll Podcaster" />
-<meta name="author" content="Alessio Franceschi" />
-<meta property="og:locale" content="it" />
-<meta name="description" content="A Jekyll Theme designed for Podcasters" />
-<meta property="og:description" content="A Jekyll Theme designed for Podcasters" />
-<link rel="canonical" href="https://jekyll-podcaster.netlify.app//" />
-<meta property="og:url" content="https://jekyll-podcaster.netlify.app//" />
-<meta property="og:site_name" content="Jekyll Podcaster" />
-<meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Jekyll Podcaster" />
-<meta name="twitter:site" content="@PandaSekh" />
-<meta name="twitter:creator" content="@Alessio Franceschi" /> -->
-
-      <!-- Google Analytics -->
-
-      <!-- End Google Analytics -->
       <script>
         let _data = null;
         let _fileNameOutput = "output";
@@ -73,7 +53,6 @@
             ev.preventDefault();
         }
         function dropHandler(ev) {
-            console.log('File(s) dropped');
             // Prevent default behavior (Prevent file from being opened)
             ev.preventDefault();
             if (ev.dataTransfer.items) {
@@ -119,15 +98,6 @@
             if(myElement) {
                 myElement.innerHTML = file.name;
             }
-            // let reader = new FileReader();
-            // reader.readAsText(file);
-            // reader.onload = function() {
-            //     console.log(reader.result);
-            // };
-
-            // reader.onerror = function() {
-            //     console.log(reader.error);
-            // };
         }
 
         function processEexcelFile(file){
@@ -142,7 +112,9 @@
                     
                 });
                 let result = {};
-                // console.log(workbook.Sheets.Sheet2)
+                if (workbook.Sheets && workbook.Sheets.Sheet1 && workbook.Sheets.Sheet1.A1) {
+                  $("#month").text(workbook.Sheets.Sheet1.A1.v);
+                }
                 let jsonObj = XLSX.utils.sheet_to_json(workbook.Sheets['Sheet2'], {raw: false});
                 _data = {};
                 showHeader();
@@ -347,29 +319,6 @@
     <div id="header">
       <h1><a href="">Convert hours table in Xls file to decimal units</a></h1>
       <div class="wave"></div>
-
-      <nav role="navigation">
-        <div id="desktop-nav">
-          <ul id="desktop-menu">
-            <li><a href=""> About</a></li>
-
-            <li><a href=""> Contact Us</a></li>
-          </ul>
-        </div>
-        <div id="hammenuToggle">
-          <input type="checkbox" />
-
-          <span></span>
-          <span></span>
-          <span></span>
-
-          <ul id="menu">
-            <li><a href=""> 111</a></li>
-
-            <li><a href=""> 222</a></li>
-          </ul>
-        </div>
-      </nav>
     </div>
     <div class="container">
       <div class="content">
@@ -383,9 +332,8 @@
   
               <div class="info">
                 <span>
-                  <i class="far fa-calendar" aria-hidden="true"></i>December<span
-                    >12 - 22</span
-                  ><i class="far fa-clock"></i> 52:14
+                  <i class="far fa-calendar" aria-hidden="true"></i>
+                    <span id="month"></span><span id="year"></span>
                 </span>
               </div>
             </div> 
@@ -395,7 +343,7 @@
                 id="drop_zone"
                 ondrop="dropHandler(event);"
                 ondragover="dragOverHandler(event);">
-                <p id="filesListElement">Drag XLS file to this <i>drop zone</i>.</p>
+                <span id="filesListElement">Drag XLS file to this <i>drop zone</i>.</span>
               </div>
               <!-- <p>Drag your Xls file in here</p> -->
             </div>
@@ -406,12 +354,20 @@
         <!-- Pagination links -->
       </div>
 
+      <div class="content save-button">
+        <div class="left">
+          <button onclick="saveAsExcel()">Download Decimal Xls File</button>
+          <button class="whatsapp" onclick="window.open('https://web.whatsapp.com://send?text=This is whatsapp sharing example using button')"> Send by WhatsApp </button>
+        </div>
+        <div class="right">
+          <button onclick="clear()">Clear</button>
+        </div>
+      </div>
+      
       <div class="content">
         <div class="post resultsList">
           <ul id="resultsList">
-
           </ul>
-          
         </div>
       </div>
     </div>
@@ -419,11 +375,9 @@
       <p>
         Copyright <a href="https://www.pay-calc.com">Hours Calc</a>.
         All Right Reserved.
-        <!-- DO NOT DELETE -->Theme designed by
-        <a href="https://alessiofranceschi.me/">Alessio Franceschi</a>.
       </p>
     </footer>
-    <ul class="circles">
+    <ul class="bubles">
       <li></li>
       <li></li>
       <li></li>
@@ -437,15 +391,7 @@
     </ul>
     <script>
       const controls = [
-        "play",
-        "rewind",
-        "progress",
-        "fast-forward",
-        "current-time",
-        "mute",
-        "volume",
-        "settings",
-        "airplay",
+        "play"
       ];
 
       const players = Array.from(document.querySelectorAll(".player"));
