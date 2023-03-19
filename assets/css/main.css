@@ -597,10 +597,16 @@ body {
     width: 100%;
     height: 100%;
     background-color: #fdf1e7;
+    position: relative;
 }
 
 #filesListElement {
-    
+    position: absolute;
+    color: rgb(145 146 149 / 48%);
+    font-size: 1.5rem;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .post.resultsList {
@@ -639,6 +645,20 @@ body {
 
 .container .content.save-button {
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.content.save-button .left {
+}
+
+
+.content.save-button .whatsapp{
+    background-color: #25D366;
+}
+
+.content.save-button .right button {
+    background-color: #ea2929;
 }
 
 button {
